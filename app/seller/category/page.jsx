@@ -1,7 +1,6 @@
-"use client";
+'use client';
 import React, { useState, useEffect } from "react";
 import { assets } from "@/assets/assets";
-import Image from "next/image";
 
 const CategoryManager = () => {
   const [categoryImage, setCategoryImage] = useState(null);
@@ -10,6 +9,7 @@ const CategoryManager = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [categories, setCategories] = useState([]);
+  const [fetchLoading, setFetchLoading] = useState(true);
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -18,8 +18,9 @@ const CategoryManager = () => {
 
   const fetchCategories = async () => {
     try {
+      setFetchLoading(true);
       const response = await fetch(
-        "http://localhost:5000/api/v1/category/getcategories"
+        "http://localhost:5000/api/v1/category/getcategory"
       );
       const data = await response.json();
 
@@ -31,6 +32,8 @@ const CategoryManager = () => {
     } catch (error) {
       console.error("Error:", error);
       setError("Failed to fetch categories. Please try again.");
+    } finally {
+      setFetchLoading(false);
     }
   };
 
@@ -75,6 +78,11 @@ const CategoryManager = () => {
         setCategoryImage(null);
         // Refresh categories list
         fetchCategories();
+        
+        // Auto-hide success message after 5 seconds
+        setTimeout(() => {
+          setSuccess("");
+        }, 5000);
       } else {
         setError(data.error || "Failed to create category");
       }
@@ -85,6 +93,17 @@ const CategoryManager = () => {
       setLoading(false);
     }
   };
+
+  if (fetchLoading) {
+    return (
+      <div className="flex-1 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading categories...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 min-h-screen flex flex-col p-4 md:p-8">
@@ -139,12 +158,12 @@ const CategoryManager = () => {
                 />
                 <div className="flex items-center justify-center w-40 h-40 border-2 border-dashed border-gray-300 rounded-lg">
                   {categoryImage ? (
-                    <Image
+                    <img
                       src={URL.createObjectURL(categoryImage)}
                       alt="Category preview"
                       width={150}
                       height={150}
-                      className="object-cover rounded-md"
+                      className="object-cover rounded-md w-full h-full"
                     />
                   ) : (
                     <div className="text-center">
@@ -183,12 +202,11 @@ const CategoryManager = () => {
                   key={category._id}
                   className="border rounded p-3 flex items-center gap-3"
                 >
-                  <div className="w-12 h-12 relative">
-                    <Image
+                  <div className="w-12 h-12">
+                    <img
                       src={category.image}
                       alt={category.name}
-                      fill
-                      className="object-cover rounded"
+                      className="w-12 h-12 object-cover rounded"
                     />
                   </div>
                   <div>

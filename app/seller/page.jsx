@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useState, useEffect } from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
@@ -17,6 +17,7 @@ const AddProduct = () => {
   ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [fetchLoading, setFetchLoading] = useState(true);
 
   // Fetch categories on component mount
@@ -141,6 +142,7 @@ const AddProduct = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccess("");
 
     try {
       // Validate required fields
@@ -191,7 +193,7 @@ const AddProduct = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Product created successfully!");
+        setSuccess("Product created successfully!");
         // Reset form
         setName("");
         setDescription("");
@@ -202,6 +204,11 @@ const AddProduct = () => {
         ]);
         setMainImage(null);
         setFiles([]);
+        
+        // Auto-hide success message after 5 seconds
+        setTimeout(() => {
+          setSuccess("");
+        }, 5000);
       } else {
         setError(data.error || "Failed to create product");
       }
@@ -231,6 +238,12 @@ const AddProduct = () => {
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+          {success}
         </div>
       )}
 
