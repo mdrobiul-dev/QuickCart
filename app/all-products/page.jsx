@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "@/components/ProductCard";
@@ -12,9 +12,12 @@ const AllProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/v1/product/productlist", {
-          params: { page: 1, limit: 20 },
-        });
+        const res = await axios.get(
+          "http://localhost:5000/api/v1/product/productlist",
+          {
+            params: { page: 1, limit: 20 },
+          }
+        );
         setProducts(res.data.products || []);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -46,7 +49,9 @@ const AllProducts = () => {
                 <ProductCard key={product._id} product={product} />
               ))
             ) : (
-              <p className="text-center col-span-full text-gray-500">No products found.</p>
+              <p className="text-center col-span-full text-gray-500">
+                No products found.
+              </p>
             )}
           </div>
         )}
@@ -57,5 +62,3 @@ const AllProducts = () => {
 };
 
 export default AllProducts;
-
-
