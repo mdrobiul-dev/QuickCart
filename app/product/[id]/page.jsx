@@ -37,7 +37,9 @@ const Product = () => {
 
       if (product) {
         setProductData(product);
-        setMainImage(product.mainImg || product.images?.[0] || "/placeholder.png");
+        setMainImage(
+          product.mainImg || product.images?.[0] || "/placeholder.png"
+        );
       }
     };
 
@@ -84,9 +86,7 @@ const Product = () => {
               {productData.title}
             </h1>
             <p className="text-gray-600 mt-3">{productData.description}</p>
-            <p className="text-3xl font-medium mt-6">
-              ${productData.price}
-            </p>
+            <p className="text-3xl font-medium mt-6">${productData.price}</p>
             <hr className="bg-gray-600 my-6" />
 
             <div className="flex items-center mt-10 gap-4">
@@ -113,7 +113,8 @@ const Product = () => {
         <div className="flex flex-col items-center">
           <div className="flex flex-col items-center mb-4 mt-16">
             <p className="text-3xl font-medium">
-              Featured <span className="font-medium text-orange-600">Products</span>
+              Featured{" "}
+              <span className="font-medium text-orange-600">Products</span>
             </p>
             <div className="w-28 h-0.5 bg-orange-600 mt-2"></div>
           </div>
@@ -133,4 +134,3 @@ const Product = () => {
 };
 
 export default Product;
-
