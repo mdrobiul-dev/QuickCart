@@ -6,7 +6,8 @@ const ProductCard = ({ product }) => {
   const { currency, router } = useAppContext();
 
   // safe fallbacks using your schema
-  const imageUrl = product?.mainImg || product?.images?.[0] || "/placeholder.png";
+  const imageUrl =
+    product?.mainImg || product?.images?.[0] || "/placeholder.png";
   const title = product?.title || "Untitled";
   const description = product?.description || "No description available";
   const price = product?.price ?? "N/A";
@@ -48,9 +49,7 @@ const ProductCard = ({ product }) => {
               key={index}
               className="h-3 w-3"
               src={
-                index < Math.floor(4)
-                  ? assets.star_icon
-                  : assets.star_dull_icon
+                index < Math.floor(4) ? assets.star_icon : assets.star_dull_icon
               }
               alt="star_icon"
             />
@@ -73,5 +72,3 @@ const ProductCard = ({ product }) => {
 };
 
 export default ProductCard;
-
-
