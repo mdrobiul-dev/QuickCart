@@ -51,7 +51,7 @@ const VerifyEmail = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, otp: otpValue }),
+        body: JSON.stringify({ email, otp: Number(otpValue) }),
       });
 
       const data = await response.json();
@@ -90,7 +90,7 @@ const VerifyEmail = () => {
       if (response.ok) {
         setSuccess("New OTP sent to your email!");
         setOtp(["", "", "", ""]);
-        document.getElementById("otp-0").focus();
+        setTimeout(() => document.getElementById("otp-0")?.focus(), 100);
       } else {
         setError(data.error || "Failed to resend OTP");
       }

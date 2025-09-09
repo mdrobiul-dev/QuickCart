@@ -4,12 +4,14 @@ import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Eye, EyeOff } from 'lucide-react';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -24,6 +26,10 @@ const AuthPage = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -66,7 +72,7 @@ const AuthPage = () => {
         } else {
           setSuccess("Registration successful! Please check your email for OTP verification.");
           // You might want to redirect to OTP verification page
-          router.push(`/verify-email?email=${formData.email}`);
+          router.push(`/auth/verify-email?email=${formData.email}`);
         }
       } else {
         setError(data.error || "Something went wrong");
@@ -84,7 +90,7 @@ const AuthPage = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Image
-            src={assets.logo} // Replace with your actual logo
+            src={assets.logo}
             alt="Logo"
             width={60}
             height={60}
@@ -183,18 +189,29 @@ const AuthPage = () => {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <div className="mt-1">
+              <div className="mt-1 relative">
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm pr-10"
                   placeholder="Enter your password"
                 />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -232,7 +249,7 @@ const AuthPage = () => {
                 </div>
 
                 <div className="text-sm">
-                  <Link href="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
+                  <Link href="/auth/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
                     Forgot your password?
                   </Link>
                 </div>
@@ -269,7 +286,6 @@ const AuthPage = () => {
                 type="button"
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
               >
-                <Image src={assets.google_icon} alt="Google" width={20} height={20} />
                 <span className="ml-2">Google</span>
               </button>
 
@@ -277,7 +293,6 @@ const AuthPage = () => {
                 type="button"
                 className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
               >
-                <Image src={assets.facebook_icon} alt="Facebook" width={20} height={20} />
                 <span className="ml-2">Facebook</span>
               </button>
             </div>
