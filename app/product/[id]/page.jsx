@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import axios from "axios";
 import React from "react";
+import { useAppContext } from "@/context/AppContext";
 
 const Product = () => {
   const { id } = useParams();
@@ -16,6 +17,8 @@ const Product = () => {
   const [productData, setProductData] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const { addToCart, cartLoading } = useAppContext();
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -71,10 +74,22 @@ const Product = () => {
     }
   }, [id]);
 
-  const addToCart = (productId) => {
-    // Implement your cart logic here
-    console.log("Add to cart:", productId);
-    // You might want to use a context or state management for cart
+  const handleAddToCart = async () => {
+    const success = await addToCart(productData._id, 1);
+    if (success) {
+      alert('Product added to cart successfully!');
+    } else {
+      alert('Please login to add items to cart');
+    }
+  };
+
+  const handleBuyNow = async () => {
+    const success = await addToCart(productData._id, 1);
+    if (success) {
+      router.push("/cart");
+    } else {
+      alert('Please login to purchase items');
+    }
   };
 
   if (loading) return <Loading />;
@@ -129,19 +144,18 @@ const Product = () => {
 
             <div className="flex items-center mt-10 gap-4">
               <button
-                onClick={() => addToCart(productData._id)}
-                className="w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition"
+                onClick={handleAddToCart}
+                disabled={cartLoading || productData.stock <= 0}
+                className="w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Add to Cart
+                {cartLoading ? 'Adding...' : 'Add to Cart'}
               </button>
               <button
-                onClick={() => {
-                  addToCart(productData._id);
-                  router.push("/cart");
-                }}
-                className="w-full py-3.5 bg-orange-500 text-white hover:bg-orange-600 transition"
+                onClick={handleBuyNow}
+                disabled={cartLoading || productData.stock <= 0}
+                className="w-full py-3.5 bg-orange-500 text-white hover:bg-orange-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Buy now
+                {cartLoading ? 'Adding...' : 'Buy now'}
               </button>
             </div>
           </div>

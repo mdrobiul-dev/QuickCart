@@ -1,45 +1,15 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { assets } from "@/assets/assets";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useAppContext } from "@/context/AppContext";
 
 const Navbar = () => {
-  const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isSeller, setIsSeller] = useState(false);
-
-  useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-
-    if (token && userData) {
-      const userObj = JSON.parse(userData);
-      setIsLoggedIn(true);
-      setUser(userObj);
-      setIsSeller(userObj.role === "admin" || userObj.role === "stuff");
-    } else {
-      setIsLoggedIn(false);
-      setUser(null);
-      setIsSeller(false);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    // Clear authentication data
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-    setUser(null);
-    setIsSeller(false);
-    router.push("/");
-  };
+  const { router, userData, isSeller, logout } = useAppContext();
 
   const handleAccountClick = () => {
-    if (isLoggedIn) {
+    if (userData) {
       // Navigate to user profile or dashboard based on role
       if (isSeller) {
         router.push("/seller");
@@ -93,30 +63,30 @@ const Navbar = () => {
         />
 
         <div className="flex items-center gap-4">
-          {isLoggedIn ? (
+          {userData ? (
             <>
               {/* User is logged in - show user menu */}
               <div className="flex items-center gap-2">
-                {user?.avatar ? (
+                {userData.avatar ? (
                   <img
-                    src={user.avatar}
+                    src={userData.avatar}
                     alt="User avatar"
                     className="w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
                     <span className="text-sm text-gray-600">
-                      {user?.fullName?.charAt(0).toUpperCase()}
+                      {userData.fullName?.charAt(0).toUpperCase()}
                     </span>
                   </div>
                 )}
                 <span className="text-sm hidden lg:block">
-                  Hi, {user?.fullName?.split(" ")[0]}
+                  Hi, {userData.fullName?.split(" ")[0]}
                 </span>
               </div>
 
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="text-xs border border-gray-300 px-3 py-1.5 rounded-full hover:bg-gray-50 transition"
               >
                 Logout
@@ -155,9 +125,9 @@ const Navbar = () => {
           className="flex items-center gap-1 hover:text-gray-900 transition"
         >
           <Image src={assets.user_icon} alt="user icon" className="w-5 h-5" />
-          {isLoggedIn && user?.avatar && (
+          {userData && userData.avatar && (
             <img
-              src={user.avatar}
+              src={userData.avatar}
               alt="User avatar"
               className="w-6 h-6 rounded-full object-cover"
             />

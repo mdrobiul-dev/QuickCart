@@ -1,36 +1,11 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { assets } from '../../assets/assets'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useAppContext } from '@/context/AppContext'
 
 const Navbar = () => {
-  const router = useRouter()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem('token')
-    const userData = localStorage.getItem('user')
-    
-    if (token && userData) {
-      setIsLoggedIn(true)
-      setUser(JSON.parse(userData))
-    } else {
-      setIsLoggedIn(false)
-      setUser(null)
-    }
-  }, [])
-
-  const handleLogout = () => {
-    // Clear authentication data
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    setIsLoggedIn(false)
-    setUser(null)
-    router.push('/')
-  }
+  const { router, userData, logout } = useAppContext()
 
   const handleLogin = () => {
     router.push('/auth')
@@ -46,25 +21,29 @@ const Navbar = () => {
       />
       
       <div className="flex items-center gap-4">
-        {isLoggedIn ? (
+        {userData ? (
           <>
             {/* User is logged in - show user info and logout button */}
-            {user && (
-              <div className="hidden sm:flex items-center gap-2">
-                <span className="text-sm text-gray-600">
-                  Hello, {user.fullName}
-                </span>
-                {user.avatar && (
-                  <img 
-                    src={user.avatar} 
-                    alt="User avatar" 
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                )}
-              </div>
-            )}
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="text-sm text-gray-600">
+                Hello, {userData.fullName}
+              </span>
+              {userData.avatar ? (
+                <img 
+                  src={userData.avatar} 
+                  alt="User avatar" 
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                  <span className="text-sm text-gray-600">
+                    {userData.fullName?.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
             <button 
-              onClick={handleLogout}
+              onClick={logout}
               className='bg-gray-600 text-white px-5 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm hover:bg-gray-700 transition-colors'
             >
               Logout
