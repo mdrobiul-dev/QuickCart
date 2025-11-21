@@ -37,10 +37,8 @@ const ProductCard = ({ product }) => {
 
       {/* Price & Button */}
       <div className="flex items-end justify-between w-full mt-1">
-        <p className="text-base font-medium">
-          ${price}
-        </p>
-        <button 
+        <p className="text-base font-medium">${price}</p>
+        <button
           onClick={(e) => {
             e.stopPropagation();
             if (product?._id) {
